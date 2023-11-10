@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 COPY ./service /code/
 EXPOSE 8082
 # Expose the port your Flask app runs on
-CMD ["uvicorn", "userservice:app", "--host", "0.0.0.0", "--port", "8082"]
+CMD ["uvicorn", "courseregistrationservice:app", "--host", "0.0.0.0", "--port", "8082"]
