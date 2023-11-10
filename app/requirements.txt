@@ -4,3 +4,4 @@ uvicorn>=0.15.0,<0.16.0
 sqlalchemy>=2.0.23
 python-dotenv>=0.21.1
 psycopg2>=2.9.9
+requests>=2.30.0
