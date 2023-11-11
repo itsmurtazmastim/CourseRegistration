@@ -4,5 +4,12 @@ services:
     build: ./app/
     ports:
      - 8082:8082
+    networks:
+        - course_reg_nw
   registrationdb:
     build: ./database/
+    networks:
+        - course_reg_nw
+networks:
+   course_reg_nw:
+      driver: bridge
