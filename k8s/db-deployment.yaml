@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registrationdb-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registrationdbapp
+  template:
+    metadata:
+      labels:
+        app: registrationdbapp
+    spec:
+      containers:
+      - name: registrationdbapp
+        image: vanidevilekkala/scalable-services:registration-db-v1
+          # itsmurtaz/scalable_service_assignment:userservice-db
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: registrationdb
+spec:
+  selector:
+    app: registrationdbapp
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: default
+  labels:
+    app: registrationdbapp
+data:
+  POSTGRES_DB: courseregistrationservice
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registrationapp-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registrationapp
+  template:
+    metadata:
+      labels:
+        app: registrationapp
+    spec:
+      containers:
+      - name: registrationapp
+        image: vanidevilekkala/scalable-services:registration-app-v1 
+        ports:
+        - containerPort: 8082  # Replace with the port your app service is listening on
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: registration-service
+spec:
+  selector:
+    app: registrationapp
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082
+  type: NodePort
