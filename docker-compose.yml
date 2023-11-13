@@ -1,15 +1,18 @@
 version: "3.8"
 services:
-  app:
-    build: ./app/
-    ports:
-     - 8082:8082
-    networks:
-        - course_reg_nw
   registrationdb:
     build: ./database/
     networks:
         - course_reg_nw
+  app:
+    build: ./app/
+    ports:
+     - "8082:8082"
+    networks:
+        - course_reg_nw
+    depends_on:
+        - registrationdb
 networks:
    course_reg_nw:
-      driver: bridge
+    name: course_reg_nw
+    external: true

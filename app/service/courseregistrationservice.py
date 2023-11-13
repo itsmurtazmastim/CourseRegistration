@@ -120,6 +120,7 @@ def delete_batch(u_id: int):
             json_string = '{"message": "' + retString + '"}'
             return json.loads(json_string)
     except:
+        session.rollback()
         print('Exception occurred while deleting')
 
 @app.post('/batches', status_code=201)
@@ -133,12 +134,13 @@ def new_batch(batchObj: BatchSchema, response: Response):
         if response.status_code == 200:
             print("Successfully validated the course " + str(batchObj.courseid) + " exists in course service")
         else:
-            print("course service returned with no success " + response)
+            print("course service returned with Status " + str(response.status_code) + " and response text as " + response.text)
             response.status_code = status.HTTP_400_BAD_REQUEST
-            retString = "Course id does not exists in course service"
+            retString = "Course with Course id " + str(batchObj.courseid)+ " does not exists in course service"
             json_string = '{"message": "' + retString + '"}'
             return json.loads(json_string)
-    except Exception:
+    except Exception as e:
+         print(e)
          print("Error: Failed to communicate with the course service server. Ensure that the server is running")
          response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR 
          retString = "Exception occured communicating with course service"
@@ -169,6 +171,7 @@ def new_batch(batchObj: BatchSchema, response: Response):
         return BatchSchema.from_orm(new_batch)
     
     except exc.IntegrityError:
+        session.rollback()
         print("Exception Occured")
         return "Unable to add duplicate values"
     
@@ -195,7 +198,7 @@ def get_registration(u_id: int, response: Response):
         json_string = '{"message": "' + retString + '"}'
         return json.loads(json_string)
     else:
-        registration_list  = parse_obj_as(List[RegistrationSchema], batches)
+        registration_list  = parse_obj_as(List[RegistrationSchema], registrations)
         response.status_code = status.HTTP_200_OK
         return registration_list
 
@@ -214,6 +217,7 @@ def delete_registration(u_id: int):
             json_string = '{"message": "' + retString + '"}'
             return json.loads(json_string)
     except:
+        session.rollback()
         print('Exception occurred while deleting')
 
 @app.post('/registrations', status_code=201)
@@ -228,12 +232,13 @@ def new_registration(registrationObj: RegistrationSchema):
         if response.status_code == 200:
             print("Successfully validated the user " + str(registrationObj.userid) + " exists in user service")
         else:
-            print("user service returned with no success " + response)
+            print("user service returned with status " + str(response.status_code) + " and response text as " + response.text)
             response.status_code = status.HTTP_400_BAD_REQUEST
-            retString = "User id does not exists in user service"
+            retString = "User with user id " + str(registrationObj.userid) +" does not exists in user service"
             json_string = '{"message": "' + retString + '"}'
             return json.loads(json_string)
-    except Exception:
+    except Exception as e:
+         print(e)
          print("Error: Failed to communicate with the user service server. Ensure that the server is running")
          response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR 
          retString = "Exception occured communicating with user service"
@@ -248,12 +253,13 @@ def new_registration(registrationObj: RegistrationSchema):
         if response.status_code == 200:
             print("Successfully validated the course " + str(registrationObj.courseid) + " exists in course service")
         else:
-            print("course service returned with no success " + response)
+            print("course service returned with status " + str(response.status_code) + " and response text as " + response.text)
             response.status_code = status.HTTP_400_BAD_REQUEST
-            retString = "Course id does not exists in course service"
+            retString = "Course with Course id " + str(registrationObj.courseid)+ " does not exists in course service"
             json_string = '{"message": "' + retString + '"}'
             return json.loads(json_string)
-    except Exception:
+    except Exception as e:
+         print(e)
          print("Error: Failed to communicate with the course service server. Ensure that the server is running")
          response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR 
          retString = "Exception occured communicating with course service"
@@ -285,6 +291,7 @@ def new_registration(registrationObj: RegistrationSchema):
         return RegistrationSchema.from_orm(new_registration)
     
     except exc.IntegrityError:
+        session.rollback()
         print("Exception Occured")
         return "Unable to add duplicate values"
 
